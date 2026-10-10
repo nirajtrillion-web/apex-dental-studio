@@ -77,3 +77,21 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Completely hide Next.js development indicator badge */
+nextjs-portal,
+#nextjs-dev-tools-portal,
+[data-nextjs-dev-tools-indicator],
+[data-nextjs-toast],
+div[data-nextjs-dialog-header],
+button[aria-label="Next.js DevTools"],
+button[aria-label="Next.js"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+

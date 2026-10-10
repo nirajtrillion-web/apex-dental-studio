@@ -16,8 +16,71 @@ import BookingModal from '@/components/BookingModal';
 import WhatsAppWidget from '@/components/WhatsAppWidget';
 import StickyMobileActionBar from '@/components/StickyMobileActionBar';
 
+const DEFAULT_TREATMENTS: Treatment[] = [
+  {
+    id: 't1000000-0000-0000-0000-000000000001',
+    name: 'Clear Aligner Smile Correction',
+    category: 'Cosmetic',
+    tagline: 'Custom US-FDA certified clear aligners designed by Dr. Ananya Parekh for gap & crowding correction.',
+    starting_price: 65000,
+    duration: '6 - 14 Months',
+    image_url: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80',
+    inclusions: ['3D Intraoral Digital Scan', 'AI-Powered Smile Preview', 'All Aligner Trays + Retainers', 'Bi-Monthly Progress Checkups'],
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000002',
+    name: 'Single Tooth / Full Arch Implant',
+    category: 'Implants',
+    tagline: 'Permanent Swedish titanium implant with computer-guided surgical precision by Dr. Sameer Merchant.',
+    starting_price: 32000,
+    duration: '3 - 6 Months',
+    image_url: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80',
+    inclusions: ['3D CBCT Bone Density Scan', 'Grade-5 Titanium Implant Post', 'Custom Zirconia Crown', 'Lifetime Manufacturer Warranty'],
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000003',
+    name: 'Hollywood Porcelain Veneers',
+    category: 'Cosmetic',
+    tagline: 'Hand-sculpted ultra-thin E.Max ceramic veneers for permanent radiance and stain resistance.',
+    starting_price: 18000,
+    duration: '2 - 3 Sessions',
+    image_url: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=800&q=80',
+    inclusions: ['Digital Smile Design (DSD)', 'Mockup Fitting & Try-In', 'Custom Color Shading & Glaze', '10-Year Fracture Guarantee'],
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000004',
+    name: 'Laser Teeth Whitening (In-Office)',
+    category: 'Cosmetic',
+    tagline: 'Instant 6 to 8 shades lighter radiance in a single 45-minute painless laser session.',
+    starting_price: 12000,
+    duration: '45 Minutes',
+    image_url: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80',
+    inclusions: ['Ultrasonic Enamel Polishing', 'Cold Blue Laser Activation Gel', 'Anti-Sensitivity Desensitizer', 'Take-Home Maintenance Kit'],
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000005',
+    name: 'Microscopic Root Canal Therapy',
+    category: 'General',
+    tagline: 'Single-sitting painless root canal under Carl Zeiss surgical magnification.',
+    starting_price: 8500,
+    duration: '45 - 60 Minutes',
+    image_url: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80',
+    inclusions: ['Digital RVG X-Rays', '3D Rotary Apex Locator', 'Biocompatible Gutta Percha Seal', 'Monitored Local Anesthesia'],
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000006',
+    name: 'Comprehensive Oral & Cancer Screening',
+    category: 'General',
+    tagline: 'Full-mouth digital wellness audit, HD intraoral camera tour, and ultrasonic scaling.',
+    starting_price: 1500,
+    duration: '30 Minutes',
+    image_url: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80',
+    inclusions: ['Full Mouth Ultrasonic Scaling', 'HD Intraoral Camera Tour', 'Enamel Mineralization Audit', 'Personalized Care Blueprint'],
+  },
+];
+
 export default function HomePage() {
-  const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const [treatments, setTreatments] = useState<Treatment[]>(DEFAULT_TREATMENTS);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,10 +103,10 @@ export default function HomePage() {
           supabase.from('doctors').select('*').order('experience_years', { ascending: false }),
         ]);
 
-        if (treatmentsRes.data) {
+        if (treatmentsRes.data && treatmentsRes.data.length > 0) {
           setTreatments(treatmentsRes.data as Treatment[]);
         }
-        if (doctorsRes.data) {
+        if (doctorsRes.data && doctorsRes.data.length > 0) {
           setDoctors(doctorsRes.data as Doctor[]);
         }
       } catch (err) {

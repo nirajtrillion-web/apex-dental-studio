@@ -48,32 +48,38 @@ export default function BeforeAfterSlider() {
     const x = clientX - rect.left;
     const width = rect.width;
     const percentage = Math.max(0, Math.min(100, (x / width) * 100));
-    setSliderPosition(percentage);
+    requestAnimationFrame(() => {
+      setSliderPosition(percentage);
+    });
   }, []);
 
   const handleMouseDown = () => setIsDragging(true);
   const handleMouseUp = () => setIsDragging(false);
 
   useEffect(() => {
+    let animationFrameId: number | null = null;
     const onMouseMove = (e: MouseEvent) => {
       if (isDragging) {
-        handleMove(e.clientX);
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(() => handleMove(e.clientX));
       }
     };
     const onTouchMove = (e: TouchEvent) => {
       if (isDragging && e.touches[0]) {
-        handleMove(e.touches[0].clientX);
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(() => handleMove(e.touches[0].clientX));
       }
     };
     const onEnd = () => setIsDragging(false);
 
     if (isDragging) {
-      window.addEventListener('mousemove', onMouseMove);
-      window.addEventListener('mouseup', onEnd);
-      window.addEventListener('touchmove', onTouchMove);
-      window.addEventListener('touchend', onEnd);
+      window.addEventListener('mousemove', onMouseMove, { passive: true });
+      window.addEventListener('mouseup', onEnd, { passive: true });
+      window.addEventListener('touchmove', onTouchMove, { passive: true });
+      window.addEventListener('touchend', onEnd, { passive: true });
     }
     return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onEnd);
       window.removeEventListener('touchmove', onTouchMove);
@@ -164,18 +170,18 @@ export default function BeforeAfterSlider() {
               <span>After Result</span>
             </div>
 
-            {/* Before Image (Foreground clipped layer) */}
+            {/* Before Image (Foreground layer with GPU-accelerated clipPath) */}
             <div
               className="absolute inset-0 overflow-hidden"
-              style={{ width: `${sliderPosition}%` }}
+              style={{
+                clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`,
+                WebkitClipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`,
+              }}
             >
               <img
                 src={activeCase.beforeImage}
                 alt={`${activeCase.title} - Before Transformation`}
-                className="absolute inset-0 w-full h-full object-cover max-w-none"
-                style={{
-                  width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%',
-                }}
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
                 draggable={false}
               />
               <div className="absolute inset-0 bg-slate-950/20" />

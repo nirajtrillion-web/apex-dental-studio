@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Calendar, Menu, X, Shield, ChevronRight } from 'lucide-react';
 
 interface NavbarProps {
@@ -16,7 +17,7 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -31,7 +32,7 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center text-white shadow-md shadow-slate-900/10 group-hover:scale-105 transition-transform">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center text-white shadow-md shadow-slate-900/10 group-hover:scale-105 transition-transform duration-300">
             <Sparkles className="w-5 h-5 text-[#0D9488]" />
           </div>
           <div>
@@ -53,34 +54,38 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-700">
           <a
             href="#treatments"
-            className="hover:text-[#0D9488] transition-colors py-1"
+            className="hover:text-[#0D9488] transition-colors py-1 relative group"
           >
-            Treatments
+            <span>Treatments</span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0D9488] transition-all duration-300 group-hover:w-full" />
           </a>
           <a
             href="#transformations"
-            className="hover:text-[#0D9488] transition-colors py-1"
+            className="hover:text-[#0D9488] transition-colors py-1 relative group"
           >
-            Before &amp; After
+            <span>Before &amp; After</span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0D9488] transition-all duration-300 group-hover:w-full" />
           </a>
           <a
             href="#specialists"
-            className="hover:text-[#0D9488] transition-colors py-1"
+            className="hover:text-[#0D9488] transition-colors py-1 relative group"
           >
-            MDS Specialists
+            <span>MDS Specialists</span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0D9488] transition-all duration-300 group-hover:w-full" />
           </a>
           <a
             href="#technology"
-            className="hover:text-[#0D9488] transition-colors py-1"
+            className="hover:text-[#0D9488] transition-colors py-1 relative group"
           >
-            US FDA Tech
+            <span>US FDA Tech</span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0D9488] transition-all duration-300 group-hover:w-full" />
           </a>
           <Link
             href="/staff/login"
-            className="flex items-center gap-1 text-slate-500 hover:text-slate-900 text-xs font-semibold px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 transition-colors"
+            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200/80 transition-all duration-200"
             title="Doctor & Staff Portal"
           >
-            <Shield className="w-3.5 h-3.5 text-slate-600" />
+            <Shield className="w-3.5 h-3.5 text-[#0D9488]" />
             <span>Staff Portal</span>
           </Link>
         </nav>
@@ -90,7 +95,7 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
           <button
             onClick={() => onOpenBooking()}
             id="nav-book-btn"
-            className="flex items-center gap-2 bg-[#0F172A] hover:bg-[#1E293B] text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-sm hover:shadow-md hover:shadow-slate-900/10 transition-all active:scale-[0.98]"
+            className="flex items-center gap-2 bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm hover:shadow-md hover:shadow-slate-900/10 transition-all duration-300 active:scale-[0.98]"
           >
             <Calendar className="w-4 h-4 text-[#0D9488]" />
             <span>Book Appointment</span>
@@ -101,7 +106,7 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
         <div className="flex md:hidden items-center gap-2">
           <button
             onClick={() => onOpenBooking()}
-            className="text-xs font-semibold bg-[#0F172A] text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+            className="text-xs font-semibold bg-[#0F172A] text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 active:scale-95 transition-transform"
           >
             <Calendar className="w-3.5 h-3.5 text-[#0D9488]" />
             <span>Book</span>
@@ -117,51 +122,59 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg">
-          <a
-            href="#treatments"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-700 font-medium hover:text-[#0D9488]"
+      {/* Mobile drawer with smooth Framer Motion */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg overflow-hidden"
           >
-            Treatments &amp; Pricing
-          </a>
-          <a
-            href="#transformations"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-700 font-medium hover:text-[#0D9488]"
-          >
-            Before &amp; After Transformations
-          </a>
-          <a
-            href="#specialists"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-700 font-medium hover:text-[#0D9488]"
-          >
-            Doctor Pedigree (MDS)
-          </a>
-          <a
-            href="#technology"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-700 font-medium hover:text-[#0D9488]"
-          >
-            Class-B Laser Technology
-          </a>
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-            <Link
-              href="/staff/login"
+            <a
+              href="#treatments"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-1.5 text-xs text-slate-600 font-medium py-1"
+              className="block py-2 text-slate-700 font-medium hover:text-[#0D9488] transition-colors"
             >
-              <Shield className="w-3.5 h-3.5" />
-              <span>Doctor / Staff Login</span>
-              <ChevronRight className="w-3 h-3" />
-            </Link>
-            <span className="text-xs text-slate-400">Bandra &amp; Kandivali</span>
-          </div>
-        </div>
-      )}
+              Treatments &amp; Pricing
+            </a>
+            <a
+              href="#transformations"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 text-slate-700 font-medium hover:text-[#0D9488] transition-colors"
+            >
+              Before &amp; After Transformations
+            </a>
+            <a
+              href="#specialists"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 text-slate-700 font-medium hover:text-[#0D9488] transition-colors"
+            >
+              Doctor Pedigree (MDS)
+            </a>
+            <a
+              href="#technology"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 text-slate-700 font-medium hover:text-[#0D9488] transition-colors"
+            >
+              Class-B Laser Technology
+            </a>
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <Link
+                href="/staff/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-1.5 text-xs text-slate-600 font-medium py-1 hover:text-slate-900 transition-colors"
+              >
+                <Shield className="w-3.5 h-3.5 text-[#0D9488]" />
+                <span>Doctor / Staff Login</span>
+                <ChevronRight className="w-3 h-3" />
+              </Link>
+              <span className="text-xs text-slate-400">Bandra &amp; Kandivali</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

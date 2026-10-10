@@ -38,7 +38,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   devIndicators: false,
   async headers() {
-    return [
+    return [ 
       {
         source: '/:path*',
         headers: securityHeaders,

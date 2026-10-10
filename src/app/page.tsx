@@ -134,10 +134,15 @@ export default function HomePage() {
     } else {
       setSelectedConcernId(concern.id);
       setSelectedCategory(concern.categoryFilter);
-      // Smooth scroll to treatments
+      // Smooth scroll to treatments with Lenis
       const treatmentEl = document.getElementById('treatments');
       if (treatmentEl) {
-        treatmentEl.scrollIntoView({ behavior: 'smooth' });
+        const lenis = (window as any).__lenis;
+        if (lenis) {
+          lenis.scrollTo(treatmentEl, { offset: -80, duration: 1.2 });
+        } else {
+          treatmentEl.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     }
   };

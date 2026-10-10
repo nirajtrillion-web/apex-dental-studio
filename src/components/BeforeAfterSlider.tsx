@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import transformationsData from '@/data/transformations.json';
 import {
   Sparkles,
@@ -90,13 +91,42 @@ export default function BeforeAfterSlider() {
   return (
     <section className="py-20 bg-slate-900 text-white overflow-hidden relative" id="transformations">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/3 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <motion.div
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.1, 0.18, 0.1],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+        className="absolute top-1/3 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-teal-500/15 rounded-full blur-3xl pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.08, 0.16, 0.08],
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: 2,
+        }}
+        className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-amber-500/15 rounded-full blur-3xl pointer-events-none"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-10"
+        >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-teal-400 text-xs font-bold tracking-wide uppercase mb-3">
             <Sparkles className="w-3.5 h-3.5 text-[#0D9488]" />
             <span>Clinical Evidence &bull; 15 Documented Cases</span>
@@ -131,7 +161,7 @@ export default function BeforeAfterSlider() {
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
                     selectedCategory.toLowerCase() === cat.toLowerCase()
                       ? 'bg-[#0D9488] border-[#0D9488] text-white shadow-md shadow-teal-900/30'
-                      : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-800'
+                      : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
                   }`}
                 >
                   <span>{cat}</span>
@@ -140,13 +170,19 @@ export default function BeforeAfterSlider() {
               );
             })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Interactive Comparison Slider */}
-        <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-4xl mx-auto"
+        >
           <div
             ref={containerRef}
-            className="relative w-full h-[340px] sm:h-[460px] md:h-[540px] rounded-3xl overflow-hidden select-none cursor-ew-resize border border-slate-700/80 shadow-2xl bg-slate-950"
+            className="relative w-full h-[340px] sm:h-[460px] md:h-[540px] rounded-3xl overflow-hidden select-none cursor-ew-resize border border-slate-700/80 shadow-2xl bg-slate-950 transition-shadow hover:shadow-teal-950/30"
             onMouseDown={(e) => {
               setIsDragging(true);
               handleMove(e.clientX);
@@ -160,7 +196,7 @@ export default function BeforeAfterSlider() {
             <img
               src={activeCase.afterImage}
               alt={`${activeCase.title} - After Transformation`}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
               draggable={false}
             />
 
@@ -181,7 +217,7 @@ export default function BeforeAfterSlider() {
               <img
                 src={activeCase.beforeImage}
                 alt={`${activeCase.title} - Before Transformation`}
-                className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-opacity duration-300"
                 draggable={false}
               />
               <div className="absolute inset-0 bg-slate-950/20" />
@@ -199,7 +235,7 @@ export default function BeforeAfterSlider() {
             >
               {/* Draggable Circle Handle */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-2xl border-2 border-[#0D9488] active:scale-110 transition-transform"
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-2xl border-2 border-[#0D9488] active:scale-110 transition-transform duration-150"
                 onMouseDown={handleMouseDown}
                 onTouchStart={handleMouseDown}
               >
@@ -214,46 +250,55 @@ export default function BeforeAfterSlider() {
             </div>
           </div>
 
-          {/* Active Case Clinical Metadata Card */}
-          <div className="mt-6 p-5 rounded-2xl bg-slate-800/85 border border-slate-700/80 grid grid-cols-1 sm:grid-cols-4 gap-4 text-center sm:text-left shadow-lg">
-            <div>
-              <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
-                Clinical Case
-              </span>
-              <p className="font-extrabold text-slate-100 text-sm mt-0.5">
-                {activeCase.title}
-              </p>
-            </div>
+          {/* Active Case Clinical Metadata Card with AnimatePresence */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCase.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="mt-6 p-5 rounded-2xl bg-slate-800/85 border border-slate-700/80 grid grid-cols-1 sm:grid-cols-4 gap-4 text-center sm:text-left shadow-lg"
+            >
+              <div>
+                <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
+                  Clinical Case
+                </span>
+                <p className="font-extrabold text-slate-100 text-sm mt-0.5">
+                  {activeCase.title}
+                </p>
+              </div>
 
-            <div>
-              <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
-                Category
-              </span>
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-teal-900/60 text-teal-300 border border-teal-500/30 text-xs font-semibold mt-1">
-                {activeCase.category}
-              </span>
-            </div>
+              <div>
+                <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
+                  Category
+                </span>
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-teal-900/60 text-teal-300 border border-teal-500/30 text-xs font-semibold mt-1">
+                  {activeCase.category}
+                </span>
+              </div>
 
-            <div>
-              <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
-                Lead Specialist
-              </span>
-              <p className="font-bold text-slate-200 text-xs mt-1 flex items-center justify-center sm:justify-start gap-1">
-                <UserCheck className="w-3.5 h-3.5 text-[#0D9488]" />
-                <span>{activeCase.doctor}</span>
-              </p>
-            </div>
+              <div>
+                <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
+                  Lead Specialist
+                </span>
+                <p className="font-bold text-slate-200 text-xs mt-1 flex items-center justify-center sm:justify-start gap-1">
+                  <UserCheck className="w-3.5 h-3.5 text-[#0D9488]" />
+                  <span>{activeCase.doctor}</span>
+                </p>
+              </div>
 
-            <div>
-              <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
-                Treatment Duration
-              </span>
-              <p className="font-bold text-amber-400 text-xs mt-1 flex items-center justify-center sm:justify-start gap-1">
-                <Clock className="w-3.5 h-3.5" />
-                <span>{activeCase.duration}</span>
-              </p>
-            </div>
-          </div>
+              <div>
+                <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
+                  Treatment Duration
+                </span>
+                <p className="font-bold text-amber-400 text-xs mt-1 flex items-center justify-center sm:justify-start gap-1">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{activeCase.duration}</span>
+                </p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
 
           {/* 15-Case Interactive Thumbnail Browser */}
           <div className="mt-10">
@@ -276,7 +321,7 @@ export default function BeforeAfterSlider() {
                       setActiveCaseId(item.id);
                       setSliderPosition(50);
                     }}
-                    className={`p-2 rounded-2xl border text-left transition-all relative overflow-hidden group ${
+                    className={`p-2 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden group active:scale-95 ${
                       isCurrent
                         ? 'bg-slate-800 border-[#0D9488] ring-2 ring-[#0D9488]/40 shadow-lg'
                         : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800 hover:border-slate-600'
@@ -286,7 +331,7 @@ export default function BeforeAfterSlider() {
                       <img
                         src={item.afterImage}
                         alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
                       />
                       <span className="absolute top-1 left-1 text-[9px] px-1.5 py-0.5 rounded bg-black/70 text-white font-mono">
@@ -306,7 +351,7 @@ export default function BeforeAfterSlider() {
             </div>
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

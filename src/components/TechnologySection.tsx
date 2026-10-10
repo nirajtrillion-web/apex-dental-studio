@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ShieldCheck, Cpu, Sparkles, Activity, CheckCircle2 } from 'lucide-react';
 
 export default function TechnologySection() {
@@ -35,7 +36,13 @@ export default function TechnologySection() {
     <section className="py-20 bg-slate-50 border-b border-slate-200/80" id="technology">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-14"
+        >
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-teal-50 text-[#0D9488] text-xs font-bold uppercase tracking-wider mb-2">
             <Cpu className="w-3.5 h-3.5" />
             <span>Digital Infrastructure</span>
@@ -46,12 +53,20 @@ export default function TechnologySection() {
           <p className="text-sm sm:text-base text-slate-600 mt-2">
             Why patients travel from across South Mumbai, the Western Suburbs, and abroad to Apex Dental Studio.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {techs.map((t, idx) => (
-            <div
+            <motion.div
               key={idx}
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{
+                duration: 0.45,
+                delay: idx * 0.1,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="bg-white p-6 rounded-2xl border border-slate-200/80 luxury-card-shadow luxury-card-hover flex flex-col justify-between"
             >
               <div>
@@ -73,7 +88,7 @@ export default function TechnologySection() {
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                 <span>Available at Bandra &amp; Kandivali</span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 

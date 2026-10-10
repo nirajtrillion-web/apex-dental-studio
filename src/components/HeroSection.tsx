@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import {
   Calendar,
   MessageCircle,
@@ -24,20 +25,53 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden pt-8 pb-16 lg:py-20 bg-gradient-to-b from-white via-slate-50/50 to-[#F8FAFC]">
       {/* Decorative ambient glowing backdrops */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-100/40 rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-100/30 rounded-full blur-3xl pointer-events-none -z-10" />
+      <motion.div
+        animate={{
+          scale: [1, 1.12, 1],
+          opacity: [0.35, 0.55, 0.35],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+        className="absolute top-0 right-1/4 w-96 h-96 bg-teal-100/50 rounded-full blur-3xl pointer-events-none -z-10"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.08, 1],
+          opacity: [0.25, 0.45, 0.25],
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: 1.5,
+        }}
+        className="absolute bottom-10 left-10 w-80 h-80 bg-amber-100/40 rounded-full blur-3xl pointer-events-none -z-10"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left Column: Editorial Value Proposition */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-7 space-y-6 text-center lg:text-left"
+          >
             
             {/* Top pill badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/5 border border-slate-900/10 text-xs font-semibold text-slate-800">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/5 border border-slate-900/10 text-xs font-semibold text-slate-800"
+            >
               <span className="w-2 h-2 rounded-full bg-[#0D9488] animate-pulse" />
               <span>NABH Standards &bull; US FDA-Approved Micro-Dentistry</span>
-            </div>
+            </motion.div>
 
             {/* High-impact headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0F172A] tracking-tight leading-[1.12]">
@@ -57,7 +91,7 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
               <button
                 onClick={onOpenBooking}
                 id="hero-book-consultation-btn"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold text-base shadow-lg shadow-slate-900/15 hover:shadow-xl transition-all duration-200 active:scale-[0.99] group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold text-base shadow-lg shadow-slate-900/15 hover:shadow-xl transition-all duration-300 active:scale-[0.98] group"
               >
                 <Calendar className="w-5 h-5 text-[#0D9488] group-hover:scale-110 transition-transform" />
                 <span>Book Doctor Consultation</span>
@@ -68,7 +102,7 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 id="hero-whatsapp-btn"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold text-base border border-emerald-200/80 transition-all duration-200 group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold text-base border border-emerald-200/80 transition-all duration-300 group"
               >
                 <MessageCircle className="w-5 h-5 text-emerald-600 group-hover:scale-110 transition-transform" />
                 <span>WhatsApp Us</span>
@@ -76,7 +110,12 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-3 sm:gap-6 text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-3 sm:gap-6 text-left"
+            >
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5">
                 <div className="p-2 rounded-lg bg-teal-50 text-[#0D9488] shrink-0">
                   <Users className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -106,12 +145,17 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
                   <div className="text-[11px] sm:text-xs text-slate-500 font-medium">Hospital Sterilization</div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
 
           {/* Right Column: Editorial Visual Showcase */}
-          <div className="lg:col-span-5 relative">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 relative"
+          >
             <div className="relative mx-auto max-w-md lg:max-w-none">
               
               {/* Outer frame styling */}
@@ -146,7 +190,17 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
               </div>
 
               {/* Floating Top Floating Card: Smile preview guarantee */}
-              <div className="absolute -top-4 -left-4 sm:-left-6 bg-white p-3.5 rounded-2xl shadow-xl border border-slate-100 hidden sm:flex items-center gap-3 max-w-xs">
+              <motion.div
+                animate={{
+                  y: [0, -6, 0],
+                }}
+                transition={{
+                  duration: 4.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="absolute -top-4 -left-4 sm:-left-6 bg-white p-3.5 rounded-2xl shadow-xl border border-slate-100 hidden sm:flex items-center gap-3 max-w-xs"
+              >
                 <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center shrink-0">
                   <Sparkles className="w-5 h-5 text-[#0D9488]" />
                 </div>
@@ -154,10 +208,21 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
                   <div className="text-xs font-bold text-slate-900">3D Digital Scan Preview</div>
                   <div className="text-[11px] text-slate-500">See your final smile before starting</div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Verified Doctors Pill */}
-              <div className="absolute -bottom-4 -right-4 sm:-right-4 bg-slate-900 text-white p-3.5 rounded-2xl shadow-xl border border-slate-800 flex items-center gap-3">
+              <motion.div
+                animate={{
+                  y: [0, 6, 0],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: 0.5,
+                }}
+                className="absolute -bottom-4 -right-4 sm:-right-4 bg-slate-900 text-white p-3.5 rounded-2xl shadow-xl border border-slate-800 flex items-center gap-3"
+              >
                 <div className="flex -space-x-2">
                   <img
                     className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-900 object-cover"
@@ -174,10 +239,10 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
                   <div className="text-xs font-bold text-white">Full-Time MDS Specialists</div>
                   <div className="text-[10px] text-slate-400">14+ Years Average Experience</div>
                 </div>
-              </div>
+              </motion.div>
 
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>

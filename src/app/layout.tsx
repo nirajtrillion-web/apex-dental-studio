@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Outfit, Plus_Jakarta_Sans } from 'next/font/google';
+import { Toaster } from 'sonner';
+import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import './globals.css';
 
 const outfit = Outfit({
@@ -55,7 +57,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${plusJakartaSans.variable}`}>
       <body className="min-h-screen bg-[#F8FAFC] text-[#0F172A] antialiased selection:bg-[#0D9488]/20 selection:text-[#0D9488]">
-        {children}
+        <SmoothScrollProvider>
+          {children}
+        </SmoothScrollProvider>
+        <Toaster richColors position="top-right" closeButton theme="light" />
       </body>
     </html>
   );

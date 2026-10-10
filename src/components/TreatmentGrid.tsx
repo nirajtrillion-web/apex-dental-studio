@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Treatment } from '@/lib/types';
 import { Clock, Check, Sparkles, ArrowRight, Shield, Zap } from 'lucide-react';
 
@@ -37,7 +38,13 @@ export default function TreatmentGrid({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6"
+        >
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-teal-50 text-[#0D9488] text-xs font-bold uppercase tracking-wider mb-2">
               <Sparkles className="w-3.5 h-3.5" />
@@ -67,91 +74,102 @@ export default function TreatmentGrid({
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Treatment Cards Grid */}
+        {/* Treatment Cards Grid with Motion and Stagger */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTreatments.map((treatment) => (
-            <div
-              key={treatment.id}
-              className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden flex flex-col luxury-card-shadow luxury-card-hover group"
-            >
-              {/* Treatment Image & Badges */}
-              <div className="relative h-52 sm:h-56 w-full overflow-hidden bg-slate-100">
-                <img
-                  src={treatment.image_url}
-                  alt={treatment.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/20" />
+          <AnimatePresence mode="popLayout">
+            {filteredTreatments.map((treatment, idx) => (
+              <motion.div
+                key={treatment.id}
+                layout
+                initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{
+                  duration: 0.45,
+                  delay: Math.min(idx * 0.08, 0.3),
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden flex flex-col luxury-card-shadow luxury-card-hover group"
+              >
+                {/* Treatment Image & Badges */}
+                <div className="relative h-52 sm:h-56 w-full overflow-hidden bg-slate-100">
+                  <img
+                    src={treatment.image_url}
+                    alt={treatment.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/20" />
 
-                {/* Category Badge */}
-                <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-white/90 text-slate-800 backdrop-blur-md shadow-sm">
-                  {treatment.category}
-                </span>
+                  {/* Category Badge */}
+                  <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-white/90 text-slate-800 backdrop-blur-md shadow-sm">
+                    {treatment.category}
+                  </span>
 
-                {/* Duration Badge */}
-                <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-950/80 text-white backdrop-blur-md">
-                  <Clock className="w-3.5 h-3.5 text-[#0D9488]" />
-                  <span>{treatment.duration}</span>
-                </div>
+                  {/* Duration Badge */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-950/80 text-white backdrop-blur-md">
+                    <Clock className="w-3.5 h-3.5 text-[#0D9488]" />
+                    <span>{treatment.duration}</span>
+                  </div>
 
-                {/* Price pill inside overlay */}
-                <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between text-white">
-                  <div>
-                    <span className="text-[11px] text-slate-300 font-medium block">Starting from</span>
-                    <span className="text-xl sm:text-2xl font-black text-amber-300">
-                      {formatPrice(treatment.starting_price)}
+                  {/* Price pill inside overlay */}
+                  <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between text-white">
+                    <div>
+                      <span className="text-[11px] text-slate-300 font-medium block">Starting from</span>
+                      <span className="text-xl sm:text-2xl font-black text-amber-300">
+                        {formatPrice(treatment.starting_price)}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-emerald-300 font-medium bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">
+                      Zero-Cost EMI Avail.
                     </span>
                   </div>
-                  <span className="text-[11px] text-emerald-300 font-medium bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">
-                    Zero-Cost EMI Avail.
-                  </span>
-                </div>
-              </div>
-
-              {/* Treatment Details */}
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
-                <div>
-                  <h3 className="text-xl font-bold text-[#0F172A] tracking-tight group-hover:text-[#0D9488] transition-colors">
-                    {treatment.name}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1.5 line-clamp-2 leading-relaxed">
-                    {treatment.tagline}
-                  </p>
                 </div>
 
-                {/* Checklist inclusions */}
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 block">
-                    What is Included:
-                  </span>
-                  <ul className="space-y-1.5">
-                    {treatment.inclusions.map((inclusion, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-                        <div className="p-0.5 rounded-full bg-teal-50 text-[#0D9488] shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 stroke-[2.5]" />
-                        </div>
-                        <span className="leading-snug">{inclusion}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {/* Treatment Details */}
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
+                  <div>
+                    <h3 className="text-xl font-bold text-[#0F172A] tracking-tight group-hover:text-[#0D9488] transition-colors">
+                      {treatment.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1.5 line-clamp-2 leading-relaxed">
+                      {treatment.tagline}
+                    </p>
+                  </div>
 
-                {/* Card CTA */}
-                <div className="pt-3">
-                  <button
-                    onClick={() => onBookTreatment(treatment)}
-                    className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-[#0D9488] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.99] shadow-sm"
-                  >
-                    <span>Book This Service</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  {/* Checklist inclusions */}
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 block">
+                      What is Included:
+                    </span>
+                    <ul className="space-y-1.5">
+                      {treatment.inclusions.map((inclusion, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
+                          <div className="p-0.5 rounded-full bg-teal-50 text-[#0D9488] shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 stroke-[2.5]" />
+                          </div>
+                          <span className="leading-snug">{inclusion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Card CTA */}
+                  <div className="pt-3">
+                    <button
+                      onClick={() => onBookTreatment(treatment)}
+                      className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-[#0D9488] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-300 active:scale-[0.98] shadow-sm"
+                    >
+                      <span>Book This Service</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
 
         {filteredTreatments.length === 0 && (

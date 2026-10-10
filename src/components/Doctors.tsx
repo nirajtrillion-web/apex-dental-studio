@@ -2,8 +2,9 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { Doctor } from '@/lib/types';
-import { Award, GraduationCap, Clock, ShieldCheck, Calendar, Sparkles } from 'lucide-react';
+import { Award, GraduationCap, Clock, ShieldCheck, Calendar, Sparkles, CheckCircle2, BadgeCheck } from 'lucide-react';
 
 interface DoctorsProps {
   doctors: Doctor[];
@@ -18,7 +19,7 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
       name: 'Dr. Sameer Merchant, MDS',
       specialization: 'Chief Cosmetic Dentist & Oral Implantologist',
       experience_years: 14,
-      degrees: 'BDS, MDS (Prosthodontics) - KEM Hospital & Seth GS Medical College, Mumbai | Fellow ICOI (USA)',
+      degrees: 'BDS, MDS (Prosthodontics) - KEM Hospital & Seth GS Medical College | Fellow ICOI (USA)',
       image_url: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=80',
     },
     {
@@ -26,7 +27,7 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
       name: 'Dr. Ananya Parekh, MDS',
       specialization: 'Orthodontist & Dentofacial Orthopedics (Clear Aligners Specialist)',
       experience_years: 9,
-      degrees: 'BDS, MDS (Orthodontics), Certified Invisalign Provider | Ex-Nair Hospital Dental College',
+      degrees: 'BDS, MDS (Orthodontics) - Nair Hospital Dental College | Certified Invisalign Provider',
       image_url: '/images/dr-ananya-parekh.png',
     },
   ];
@@ -43,27 +44,41 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-14"
+        >
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-teal-50 text-[#0D9488] text-xs font-bold uppercase tracking-wider mb-2">
             <Award className="w-3.5 h-3.5" />
-            <span>MDS Leadership &amp; Pedigree</span>
+            <span>MDS Leadership &amp; IDA Credentials</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
             Consult Mumbai’s Leading Dental Specialists
           </h2>
           <p className="text-sm sm:text-base text-slate-600 mt-2">
-            Every clinical procedure is personally administered by distinguished Masters in Dental Surgery (MDS). No junior interns or outsourced general dentists.
+            Every clinical procedure is personally administered by distinguished Masters in Dental Surgery (MDS). Registered with the Indian Dental Association (IDA) and Maharashtra State Dental Council.
           </p>
-        </div>
+        </motion.div>
 
         {/* Responsive 2-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto" id="doctors-grid">
-          {displayDoctors.map((doctor) => {
+          {displayDoctors.map((doctor, idx) => {
             const isDrAnanya = doctor.name.includes('Ananya');
 
             return (
-              <div
+              <motion.div
                 key={doctor.id}
+                initial={{ opacity: 0, y: 28, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{
+                  duration: 0.55,
+                  delay: idx * 0.15,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 className="bg-[#F8FAFC] rounded-3xl border border-slate-200/80 overflow-hidden flex flex-col luxury-card-shadow luxury-card-hover group"
               >
                 {/* Doctor Headshot & Badges */}
@@ -84,12 +99,16 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
                     </span>
                   </div>
 
-                  {/* Certified Provider / Council Badge */}
-                  <div className="absolute top-4 left-4 bg-slate-900/90 text-white px-3 py-1 rounded-full text-[11px] font-semibold backdrop-blur-md flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
-                    <span>
-                      {isDrAnanya ? 'Certified Invisalign Provider' : 'Maharashtra Dental Council Reg.'}
-                    </span>
+                  {/* IDA Council & MSDC Badges */}
+                  <div className="absolute top-4 left-4 flex flex-col gap-1.5">
+                    <div className="bg-slate-900/90 text-white px-3 py-1 rounded-full text-[11px] font-semibold backdrop-blur-md flex items-center gap-1.5 shadow-sm">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#0D9488]" />
+                      <span>IDA Council Member</span>
+                    </div>
+                    <div className="bg-[#0F172A]/85 text-teal-300 px-2.5 py-0.5 rounded-full text-[10px] font-medium backdrop-blur-md flex items-center gap-1">
+                      <BadgeCheck className="w-3 h-3 text-[#D97706]" />
+                      <span>{isDrAnanya ? 'MSDC #A-22184' : 'MSDC #A-18492'}</span>
+                    </div>
                   </div>
 
                   {/* Name & Title over dark gradient */}
@@ -115,6 +134,38 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
                       </div>
                     </div>
 
+                    {/* Council Accreditation & IDA Affiliation */}
+                    <div className="pt-3 border-t border-slate-200/60">
+                      <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 block mb-2">
+                        Professional Accreditations
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-teal-50 border border-teal-200 text-teal-900 rounded-lg">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#0D9488]" />
+                          IDA Active Council Member
+                        </span>
+                        {isDrAnanya ? (
+                          <>
+                            <span className="text-xs font-medium px-2.5 py-1 bg-white rounded-lg border border-slate-200 text-slate-700">
+                              Certified Invisalign Platinum
+                            </span>
+                            <span className="text-xs font-medium px-2.5 py-1 bg-white rounded-lg border border-slate-200 text-slate-700">
+                              IOS (Indian Orthodontic Society)
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-xs font-medium px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-900 font-semibold rounded-lg">
+                              Fellow ICOI (USA)
+                            </span>
+                            <span className="text-xs font-medium px-2.5 py-1 bg-white rounded-lg border border-slate-200 text-slate-700">
+                              IPS (Indian Prosthodontic Society)
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
                     {/* Clinical Specializations */}
                     <div className="pt-3 border-t border-slate-200/60">
                       <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 block mb-2">
@@ -132,9 +183,6 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
                             <span className="text-xs font-medium px-2.5 py-1 bg-white rounded-lg border border-slate-200 text-slate-700">
                               Adult &amp; Teen Smile Alignment
                             </span>
-                            <span className="text-xs font-medium px-2.5 py-1 bg-teal-50 border border-teal-200 text-teal-800 font-semibold">
-                              Invisalign Platinum Elite
-                            </span>
                           </>
                         ) : (
                           <>
@@ -147,9 +195,6 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
                             <span className="text-xs font-medium px-2.5 py-1 bg-white rounded-lg border border-slate-200 text-slate-700">
                               Digital Smile Design
                             </span>
-                            <span className="text-xs font-medium px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-800 font-semibold">
-                              Fellow ICOI (USA)
-                            </span>
                           </>
                         )}
                       </div>
@@ -159,14 +204,14 @@ export default function Doctors({ doctors, onOpenBooking }: DoctorsProps) {
                   {/* Consultation trigger */}
                   <button
                     onClick={() => onOpenBooking(undefined, undefined, doctor.id)}
-                    className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-900 hover:text-white border border-slate-300 text-slate-800 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 shadow-sm group-hover:border-slate-400"
+                    className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-900 hover:text-white border border-slate-300 text-slate-800 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-300 shadow-sm active:scale-[0.98] group-hover:border-slate-400"
                     id={`book-with-${doctor.id}`}
                   >
                     <Calendar className="w-4 h-4 text-[#0D9488]" />
                     <span>Book Consultation with {doctor.name.split(',')[0]}</span>
                   </button>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

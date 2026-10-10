@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Treatment } from '@/lib/types';
 import { createAppointmentAction } from '@/lib/actions';
 import confetti from 'canvas-confetti';
+import { toast } from 'sonner';
 import {
   X,
   Calendar,
@@ -125,6 +127,7 @@ export default function BookingModal({
   const handleStep1Next = () => {
     if (!selectedTreatmentId) {
       setErrors({ treatment: 'Please choose a treatment service.' });
+      toast.error('Please choose a treatment service to continue.');
       return;
     }
     // Auto-assign doctor based on selected treatment
@@ -144,6 +147,7 @@ export default function BookingModal({
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error('Please select both a date and time slot.');
       return;
     }
     setErrors({});
@@ -166,6 +170,7 @@ export default function BookingModal({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error('Please verify your contact details before submitting.');
       return;
     }
 
@@ -186,7 +191,9 @@ export default function BookingModal({
       });
 
       if (!response.success) {
-        setErrors({ form: response.error || 'Failed to schedule booking.' });
+        const errorMsg = response.error || 'Failed to schedule booking.';
+        setErrors({ form: errorMsg });
+        toast.error(errorMsg);
         setIsSubmitting(false);
         return;
       }
@@ -194,6 +201,9 @@ export default function BookingModal({
       // Success
       setCreatedBooking(response.data as any);
       setCurrentStep(4);
+      toast.success('Appointment Scheduled Successfully!', {
+        description: `Your consultation is booked for ${appointmentDate} (${timeSlot}).`,
+      });
       try {
         confetti({
           particleCount: 100,
@@ -204,7 +214,9 @@ export default function BookingModal({
         // ignore
       }
     } catch (err) {
-      setErrors({ form: 'An unexpected connection error occurred. Please try again.' });
+      const errMsg = 'An unexpected connection error occurred. Please try again.';
+      setErrors({ form: errMsg });
+      toast.error(errMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -224,10 +236,20 @@ export default function BookingModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-      
-      <div className="relative bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
-        
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-4"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 16 }}
+        transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+        className="relative bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden"
+      >
         {/* Top Header */}
         <div className="bg-[#0F172A] px-6 py-5 text-white flex items-center justify-between border-b border-slate-800">
           <div>
@@ -710,8 +732,8 @@ export default function BookingModal({
 
         </div>
 
-      </div>
+      </motion.div>
 
-    </div>
+    </motion.div>
   );
 }
